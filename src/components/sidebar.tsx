@@ -1,5 +1,5 @@
 'use client'
-import { Home, Users, BarChart, Settings } from "lucide-react";
+import { Home, Users } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
