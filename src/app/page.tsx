@@ -1,103 +1,186 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Sidebar from "@/components/sidebar";
+import Navbar from "@/components/navbar";
+import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import TransactionsTable from "@/components/transactiontable";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+
+export default function DashboardPage() {
+  const router = useRouter();
+  const [lastLogin, setLastLogin] = useState<string>("");
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("mockUser");
+    const lastLoginTime = localStorage.getItem("lastLogin");
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      const now = new Date().toLocaleString("en-NG", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+      setLastLogin(lastLoginTime || now);
+      localStorage.setItem("lastLogin", now);
+    }
+  }, [router]);
+
+  // Chart data
+  const issuanceData = [
+    { month: "May", Personalized: 20, Instant: 10 },
+    { month: "Jun", Personalized: 40, Instant: 20 },
+    { month: "Jul", Personalized: 50, Instant: 30 },
+    { month: "Aug", Personalized: 60, Instant: 40 },
+    { month: "Sep", Personalized: 80, Instant: 50 },
+    { month: "Oct", Personalized: 90, Instant: 60 },
+    { month: "Nov", Personalized: 70, Instant: 55 },
+  ];
+
+  const incomeData = [
+    { day: "Mon", income: 50 },
+    { day: "Tue", income: 40 },
+    { day: "Wed", income: 70 },
+    { day: "Thu", income: 60 },
+    { day: "Fri", income: 65 },
+    { day: "Sat", income: 80 },
+    { day: "Sun", income: 90 },
+  ];
+
+  const statusData = [
+    { name: "Active", value: 1400, color: "#22c55e" },
+    { name: "Expired", value: 300, color: "#facc15" },
+    { name: "Inactive", value: 500, color: "#60a5fa" },
+    { name: "Blocked", value: 150, color: "#f97316" },
+    { name: "Lost", value: 100, color: "#ef4444" },
+  ];
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="flex h-screen">
+      <Sidebar />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      {/* Main */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Navbar />
+
+        <main className="p-4 overflow-y-auto bg-gray-50 h-full space-y-6">
+          {/* Header */}
+          <div className="flex justify-between items-start flex-wrap gap-2">
+            <div>
+              <h2 className="text-xl font-semibold">Hi Nazeer, what would you like to do today?</h2>
+              <p className="text-sm text-gray-500">Last login: {lastLogin}</p>
+            </div>
+          </div>
+
+          {/* Summary Cards: 4 cards in a row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <p className="text-sm text-gray-500">Total Active Cards</p>
+                <h2 className="text-2xl font-bold">26,478</h2>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <p className="text-sm text-gray-500">Total Personalized Cards</p>
+                <h2 className="text-2xl font-bold">15,703</h2>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <p className="text-sm text-gray-500">Today’s Revenue</p>
+                <h2 className="text-2xl font-bold">₦9.3M</h2>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <p className="text-sm text-gray-500">Pending Requests</p>
+                <h2 className="text-2xl font-bold text-orange-600">38</h2>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Monthly Issuance & Recent Card Requests side by side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardContent>
+                <h3 className="text-sm mb-2 font-semibold">Monthly Issuance</h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={issuanceData}>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="Personalized" fill="#4f46e5" />
+                    <Bar dataKey="Instant" fill="#0ea5e9" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <div className="bg-white rounded-md shadow p-4">
+              <h3 className="text-sm mb-2 font-semibold">Recent Card Requests</h3>
+              <TransactionsTable />
+            </div>
+          </div>
+
+          {/* This Week’s Income & Card Status Distribution side by side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardContent>
+                <h3 className="text-sm mb-2 font-semibold">This Week’s Income</h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={incomeData}>
+                    <XAxis dataKey="day" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="income" stroke="#22c55e" strokeWidth={3} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent>
+                <h3 className="text-sm mb-2 font-semibold">Card Status Distribution</h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={statusData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      dataKey="value"
+                      nameKey="name"
+                      label
+                    >
+                      {statusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Legend />
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
